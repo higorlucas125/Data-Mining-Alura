@@ -1,0 +1,204 @@
+---
+title: "R Notebook Alura"
+output: html_notebook
+---
+
+```{r}
+here::i_am("alura.Rmd")
+library(here)
+library(tidyverse)
+library(dplyr)
+dados <- read.csv("dados.csv")
+
+table(dados$Sexo)
+
+
+```
+```{r}
+dist_freq_qualitativas <- cbind( freq = table(dados$Sexo), percent= prop.table(table(dados$Sexo)) *100)
+
+dist_freq_qualitativas
+```
+
+```{r}
+colnames(dist_freq_qualitativas) <- c('Frequência','Porcentagem (%)')
+dist_freq_qualitativas
+```
+
+```{r}
+row.names(dist_freq_qualitativas) <- c("Masculino","Feminino")
+dist_freq_qualitativas
+```
+
+```{r}
+frequencia <- table(dados$Sexo,dados$Cor)
+frequencia
+
+row.names(frequencia) <- c("Masculino","Feminino")
+colnames(frequencia) <- c('Indigena','Branca','Preta','Amarela','Parda')
+frequencia <- cbind(frequencia)
+frequencia
+```
+
+
+```{r}
+percentual <- prop.table(frequencia) *100
+percentual
+```
+RENDA MEDIA
+```{r}
+media <- tapply(dados$Renda, list(dados$Sexo,dados$Cor), mean)
+rownames(media) <- c("Masculino","Feminino")
+colnames(media) <- c('Indigena','Branca','Preta','Amarela','Parda')
+media
+```
+Disposição de frequencia 
+```{r}
+min(dados$Renda)
+
+max(dados$Renda)
+
+```
+
+```{r}
+classe <- c(0,1576,3152,7880,15760,200000)
+labelss <- c('E','D','C','B','A')
+
+frequencia <- table(cut( x = dados$Renda, breaks = classe,labels = labelss,include.lowest = TRUE))
+```
+
+```{r}
+porcentuals <- prop.table(frequencia)*100
+porcentuals
+```
+```{r}
+dist_freq_qualitativas_personalizado <- cbind('Frequencia'= frequencia, 'Porcentagem (%)'= porcentuals)
+
+dist_freq_qualitativas_personalizado
+```
+```{r}
+dist_freq_qualitativas_personalizado[order(row.names(dist_freq_qualitativas_personalizado)),]
+```
+
+```{r}
+n <- nrow(dados)
+n
+```
+Quantidade de classes nescessaria para classificar a renda das pessoas 
+```{r}
+
+
+k <- 1 + (10/3) * log10(n)
+k <- round(k)
+
+k
+
+new_labels <- c('0.00|-|11,764.70'
+                ,'11,764.70 -| 23,529.40'
+                ,'23,529.40 -| 35,294.10'
+                ,'35,294.10 -| 47,058.80'
+                ,'47,058.80 -| 58,823.50'
+                ,'58,823.50 -| 70,588.20'
+                ,'70,588.20 -| 82,352.90'
+                ,'82,352.90 -| 94,117.60'
+                ,'94,117.60 -| 105,882.00'
+                ,'105,882.00 -| 117,647.00'
+                ,'117,647.00 -| 129,412.00'
+                ,'129,412.00 -| 141,176.00'
+                ,'141,176.00 -| 152,941.00'
+                ,'152,941.00 -| 164,706.00'
+                ,'164,706.00 -| 176,471.00'
+                ,'176,471.00 -| 188,235.00'
+                ,'188,235.00 -| 200,000.00')
+```
+Fequencia
+```{r}
+frequencia <- table(
+  cut(
+    x = dados$Renda,
+    breaks = k,
+    labels = new_labels,
+    include.lowest = TRUE
+  )
+)
+
+frequencia
+
+```
+Porcentual 
+```{r}
+porcentuals <- prop.table(frequencia)*100
+porcentuals
+```
+Frequencia e porcentual formatado
+```{r}
+dist_freq_qualitativas_amplitude_fixa <- cbind('Frequencia'= frequencia, 'Porcentagem (%)'= porcentuals)
+
+dist_freq_qualitativas_amplitude_fixa
+```
+
+HISTOGRAMA
+```{r}
+options(repr.plot.width=7,repr.plot.height=4)
+hist(dados$Altura)
+
+```
+
+```{r}
+hist(
+  x= dados$Altura,
+  breaks='Sturges',
+  col='lightblue',
+  main='Histograma das Alturas',
+  xlab='Altura',
+  ylab='Frequências'
+)
+```
+
+```{r}
+library(ggplot2)
+ggplot(dados,aes( x = Altura)) + 
+         geom_histogram( binwith = 0.02,color = "black",alpha = 0.9) + 
+         ylab("Frêquencia") + 
+         xlab("Altura") +
+         ggtitle("Histograma") + 
+         theme(
+           plot.title = element_text(size=14,hjust=0.5),
+           axis.title.y = element_text(size=12,vjust = +0.2),
+           axis.title.x = element_text(size=12,vjust = -0.2),
+           axis.text.y = element_text(size = 10),
+           axis.text.x = element_text(size = 10)
+         )
+formatos <- theme(
+           plot.title = element_text(size=14,hjust=0.5),
+           axis.title.y = element_text(size=12,vjust = +0.2),
+           axis.title.x = element_text(size=12,vjust = -0.2),
+           axis.text.y = element_text(size = 10),
+           axis.text.x = element_text(size = 10)
+         )
+
+```
+
+```{r}
+ggplot(dados,aes( x = Altura, y= ..density..)) +
+        geom_histogram( binwith = 0.02,color = "black",alpha = 0.9) +
+        geom_density(color='red') +
+        ylab("Frêquencia") + 
+         xlab("Altura") +
+         ggtitle("Histograma") + 
+           formatos   
+```
+
+```{r}
+bar_chart <- data.frame(dist_freq_qualitativas_personalizado)
+bar_chart
+```
+
+```{r}
+ggplot(bar_chart,aes(x= row.names(bar_chart), y= bar_chart$Frequencia))+
+  geom_bar(stat="identity")+
+  ylab("Frêquencia")+
+  xlab("Classes de Renda")+
+  ggtitle('Gráfico Classes de Renda')+
+  formatos
+```
