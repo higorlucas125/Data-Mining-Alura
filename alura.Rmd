@@ -227,4 +227,83 @@ mean(df$Fulano)
 Pegar a media dos sexos masculinos e femininos dos dados
 ```{r}
 aggregate(list(Renda = dados$Renda),list(Sexo = dados$Sexo), mean)
+
+
+```
+
+Mediana 
+
+Para Obtemos a mediana de um conjuto de dados devemos proceder da seguinte maneira:
+  1. Ordernar o conjutos de dados;
+  2. Identificar o número de observações(Registros) do conjunto de dados (N)
+  3. Identificar o elemento mediano:
+  
+  ```
+    Quando n for impar, a posição do elemento mediano será obtida da seguinte forma:
+    
+          Elemento = (n+1)/2
+  ```
+  
+```{r}
+df_fulano <- df[order(df$Fulano),]
+df_fulano
+```
+
+```{r}
+n <- nrow(df_fulano)
+n
+```
+
+```{r}
+element_md <- (n+1)/2
+element_md
+```
+
+```{r}
+x <- df_fulano[element_md,]
+x
+```
+
+```{r}
+median(df$Fulano)
+```
+
+```{r}
+
+set.seed(101)
+sample(nrow(df), 6)
+
+```
+ 
+```{r}
+set.seed(101)
+df_beltrano <- df[sample(nrow(df), 6),]
+df_beltrano
+```
+
+```{r}
+n <- nrow(df_beltrano)
+n
+```
+
+```{r}
+df_beltrano <- df_beltrano[order(df_beltrano$Beltrano),]
+df_beltrano
+```
+
+```{r}
+element_md =n/2
+element_md
+```
+
+```{r}
+mean(df_beltrano[c(element_md,element_md + 1 ),]$Beltrano)
+```
+
+```{r}
+median(df_beltrano$Beltrano)
+```
+
+```{r}
+median(dados$Renda)
 ```
