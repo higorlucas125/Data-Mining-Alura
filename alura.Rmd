@@ -202,3 +202,29 @@ ggplot(bar_chart,aes(x= row.names(bar_chart), y= bar_chart$Frequencia))+
   ggtitle('Gráfico Classes de Renda')+
   formatos
 ```
+
+
+Parte 3 Medidas de Têndencia Central
+
+* Media
+* Mediana
+* Moda
+
+```{r}
+materias <- c('Matematica','Portugues','Ingles','Geografia','Historia','Fisica','Quimica')
+Fulano <- c(8,10,4,8,6,10,8)
+Beltrano <- c(10,2,0.5,1,3,9.5,10)
+Sicrano <- c(7.5,8,7,8,8,8.5,7)
+
+df <- data.frame(Fulano,Beltrano,Sicrano,row.names = materias)
+```
+
+Media
+```{r}
+media <-(8+10+4+8+6+10+8) / 7
+mean(df$Fulano)
+```
+Pegar a media dos sexos masculinos e femininos dos dados
+```{r}
+aggregate(list(Renda = dados$Renda),list(Sexo = dados$Sexo), mean)
+```
